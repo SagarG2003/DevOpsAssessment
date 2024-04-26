@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agrocd-rbac-config
+data:
+  application.yaml: |
+    application:
+      name: budgetapp
+      version: v1
+      deployment:
+        strategy: rolling
+        replicas: 3
+        template:
+          metadata:
+            labels:
+              app: budgetapp
+          spec:
+            containers:
+              - name: appcontainer
+                image: budgetapp:latest
+                ports:
+                  - containerPort: 8080
+  rbac.yaml: |
+    rbac:
+      roles:
+        - name: deployment-manager
+          permissions:
+            - resource: deployment
+              verbs: ["get", "update", "delete"]
+            - resource: pod
+              verbs: ["get", "list", "watch"]
+            # Permissions
+      roleBindings:
+        - roleName: deployment-manager
+          subjects:
+            - kind: User
+              name: sagar
+            - kind: ServiceAccount
+              name: agrocd-service-account

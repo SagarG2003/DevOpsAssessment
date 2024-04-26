@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agrocd-config
+data:
+  application.yaml: |
+    application:
+      name: budgetapp
+      version: v1
+      deployment:
+        strategy: rolling
+        replicas: 3
+        template:
+          metadata:
+            labels:
+              app: budgetapp
+          spec:
+            containers:
+              - name: appcontainer
+                image: budgetapp:latest
+                ports:
+                  - containerPort: 8080
